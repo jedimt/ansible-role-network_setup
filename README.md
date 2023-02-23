@@ -59,3 +59,9 @@ License
 -------
 
 MIT
+
+Author Information
+------------------
+
+Aaron Patten
+aaronpatten@gmail.com
