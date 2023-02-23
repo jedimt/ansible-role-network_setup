@@ -1,0 +1,48 @@
+---
+# tasks file for ansible-role-network-setup
+
+- name: Check for existing netplan files
+  ansible.builtin.find:
+    paths: /etc/netplan
+    patterns: "*.*"
+  register: netplan_dir_files
+  changed_when: false
+  tags: task_netplan
+
+# Remove any netplan files found
+- name: Remove any netplan files found
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ netplan_dir_files.files }}"
+  no_log: true
+
+- name: Create netplan file
+  ansible.builtin.blockinfile:
+    path: /etc/netplan/00-{{ demopod }}.yaml
+    mode: '0755'
+    block: |
+      network:
+        version: 2
+        renderer: networkd
+        ethernets:
+          {{ data_int }}:
+            addresses:
+              - {{ mgt_net }}
+            nameservers:
+              addresses: [{{ dns_server }}, {{ dns_server_2 }}]
+              search: [{{ domain }}]
+            routes:
+              - to: default
+                via: {{ gateway4 }}
+          {{ data_int_2 }}:
+            dhcp4: false
+            activation-mode: off
+          lo:
+            dhcp4: false
+            optional: true
+            addresses:
+              - 127.0.0.1/8
+    create: true
+  tags: task_netplan
+  notify: "Apply netplan configuration"

@@ -1,0 +1,10 @@
+---
+# vars file for ansible-role-network-setup
+# Primary DNS server
+dns_server: 10.100.24.11
+
+# Secondary DNS server
+dns_server_2: 10.100.24.21
+
+# DNS search domain
+domain: tme.nebulon.com

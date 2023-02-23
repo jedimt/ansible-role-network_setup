@@ -1,0 +1,5 @@
+---
+# handlers file for ansible-role-network-setup
+- name: Apply netplan configuration
+  ansible.builtin.command: netplan apply
+  tags: task_netplan
