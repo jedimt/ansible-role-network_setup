@@ -22,8 +22,7 @@ There are three variables included in the role:
     domain: tme.nebulon.com
 
 Additionally, there are another set of variables that are defined in host_vars files for each host. This is done to accomidate dissimilar hosts which may
-have differing interface names. This assumes there are two interfaces, only one of
-which is used.
+have differing interface names. This assumes there are two interfaces, only one of which is used.
 
     # Host management network interface name
     data_int: ens3f0np0
@@ -53,7 +52,7 @@ Example Playbook
       tags: play_network_setup
 
       roles:
-        - ansible-role-network-setup
+        - jedimt.network_setup
 
 License
 -------

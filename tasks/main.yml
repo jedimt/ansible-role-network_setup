@@ -1,5 +1,5 @@
 ---
-# tasks file for ansible-role-network-setup
+# tasks file for jedimt.network_setup
 
 - name: Check for existing netplan files
   ansible.builtin.find:
