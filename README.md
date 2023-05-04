@@ -1,7 +1,7 @@
 Ansible Role: Netplan Setup
 =========
 
-Configure Netplan for a host.
+Build and apply a Netplan configuration for a host. This role assumes there are two physical adapters and will set static IP information for the primary interface and disable the secondary interface. This is useful for Kubernetes deployments where having an active secondary interface can cause traffic routing problems for MetalLB.
 
 Requirements
 ------------
@@ -21,11 +21,7 @@ There are three variables included in the role:
     # DNS search domain
     domain: tme.nebulon.com
 
-Additionally, there are another set of variables that are defined in host_vars files for each host. This is done to accomidate dissimilar hosts which may
-have differing interface names. This assumes there are two interfaces, only one of which is used.
-
-    # Host management network interface name
-    data_int: ens3f0np0
+Additionally, there are another set of variables that are defined in host_vars files for each host. This is done to provide per-host network information. Alternatively, the mgt_net and gateway4 variables could be dynamically generated from hostvars, assuming DHCP reservations apply the correct IP configuration to the host and we are just codifying that information in static assigments.
 
     # Management network address in CIDR format
     mgt_net: 10.100.25.46/22
@@ -33,8 +29,6 @@ have differing interface names. This assumes there are two interfaces, only one 
     # Gateway address in IPV4 format
     gateway4: 10.100.24.1
 
-    # Second, unused (by default) network interface
-    data_int_2: ens3f1np1
 
 Dependencies
 ------------

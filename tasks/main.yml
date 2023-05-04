@@ -1,6 +1,17 @@
 ---
 # tasks file for jedimt.network_setup
 
+# Gather facts for hosts to populate the `ansible_interfaces` magic variable
+- name: Set up facts
+  ansible.builtin.setup:
+
+# Get the secondary interface. Exclude the primary interface and the loopback adapter
+- name: Retrieve secondary interface
+  ansible.builtin.set_fact:
+    secondary_int: "{{ (ansible_interfaces | difference(['lo']) | \
+                    difference(hostvars[inventory_hostname]['ansible_default_ipv4']['interface'])) | \
+                    join('') }}"
+
 - name: Check for existing netplan files
   ansible.builtin.find:
     paths: /etc/netplan
@@ -26,7 +37,8 @@
         version: 2
         renderer: networkd
         ethernets:
-          {{ data_int }}:
+          # Dynamically chose the default IPv4 interface
+          {{ hostvars[inventory_hostname].ansible_default_ipv4.interface }}:
             addresses:
               - {{ mgt_net }}
             nameservers:
@@ -35,7 +47,8 @@
             routes:
               - to: default
                 via: {{ gateway4 }}
-          {{ data_int_2 }}:
+          # Secondary interface, disabled by default
+          {{ secondary_int }}:
             dhcp4: false
             activation-mode: off
           lo:
